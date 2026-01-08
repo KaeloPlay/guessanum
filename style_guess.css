@@ -1,0 +1,45 @@
+.elements {
+	min-height: 95vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	opacity: 1;
+	transition: opacity 0.5s ease-out;
+}
+.main {
+	opacity: 0;
+	transition: opacity 0.5s ease-out;
+}
+.guessContainer {
+	margin: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#startButton {
+	padding: 8px 30px;
+	font-size: 22px;
+	border: 1px solid black;
+	border-radius: 30px;
+	transition: opacity 0.5s ease-out;
+}
+#title {
+	text-align: center;
+	font-size: 36px;
+	font-weight: bold;
+	margin: 10px;
+}
+#lives {
+	font-size: 5px;
+}
+#text {
+	text-align: center;
+}
+#guess0, #guess1, #guess2 {
+	font-size 20px
+	margin: 20px;
+	padding: 20px 100px;
+	text-align: center;
+	transition: opacity 0.5s ease-out;
+}
