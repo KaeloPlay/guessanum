@@ -7,10 +7,10 @@ let randomIndex;
 let guessEl;
 let livesEl = document.querySelector("#lives");
 let lives;
+let buttonColor = getComputedStyle(document.querySelector("#guess0")).backgroundColor;
 
 function start() {
 	lives = 2;
-	
 	livesEl.innerHTML = (`Lives left: ${lives}`);
 	
 	const startButton = document.querySelector("#startButton");
@@ -20,18 +20,11 @@ function start() {
 	startButton.style.opacity = 0;
 	startButton.addEventListener("transitionend", () => {
 	main.style.opacity = 1;
-});
+	main.style.transform = "translateY(0px)";
+}, { once: true });
 }
 
 function setRandom() {
-	lives = 2;
-		livesEl.innerHTML = (`Lives left: ${lives}`);
-	for (let i = 0; i < 3; i++) {
-		guessEl = document.querySelector(`#guess${i}`);
-		
-		guessEl.style.opacity = 1;
-	}
-	
 	first = Math.floor(Math.random() * 25) + 1;
 	second = Math.floor(Math.random() * 25) + 1;
 
@@ -40,9 +33,20 @@ function setRandom() {
 	second = temp[1];
 
 	toGuess = Number(Math.floor(Math.random() * (second - first + 1)) + first);
+	
+	lives = 2;
+	livesEl.style.color = "var(--text-soft)";
+	livesEl.innerHTML = (`Lives left: ${lives}`);
+	for (let i = 0; i < 3; i++) {
+		guessEl = document.querySelector(`#guess${i}`);
+		
+		guessEl.style.opacity = 1;
+		guessEl.style.backgroundColor = buttonColor;
+		guessEl.classList.remove("disabled");
+	}
 
 	const textEl = document.querySelector("#text");
-	textEl.innerHTML = `${first} - ${second}`;
+	textEl.innerHTML = `${first} to ${second}`;
 	textEl.style.opacity = 1;
 
 	console.log(first, second, toGuess);
@@ -53,26 +57,35 @@ function setRandom() {
 function checkInput(index) {
 	let correct
 	let value = guessList[(index)]
+	guessEl = document.querySelector(`#guess${index}`);
 
 	correct = (value === toGuess ? "Correct" : "Wrong");
 	
 	if (correct === "Wrong") {
-		guessEl = document.querySelector(`#guess${index}`);
+		navigator.vibrate(100);
 		
+		livesEl.style.color = "var(--danger)";
+		guessEl.style.backgroundColor = "var(--danger)";
 		guessEl.style.opacity = 0;
+		guessEl.classList.add("disabled");
 		
 		lives = lives - 1;
 		livesEl.innerHTML = (`Lives left: ${lives}`);
 		
 		if (lives === 0) {
+			navigator.vibrate(300);
+			
 			main.style.opacity = 0;
-			setRandom()
+			main.style.pointerEvents = "none";
 			main.addEventListener("transitionend", () => {
+				setRandom()
 				main.style.opacity = 1;
-			});
+				main.style.pointerEvents = "auto";
+			}, { once: true });
 		}
 	} else {
-		alert("Correct!");
+		navigator.vibrate([80, 50, 80]);
+		guessEl.style.backgroundColor = "var(--correct)";
 		
 		confetti({
 			particleCount: 130,
