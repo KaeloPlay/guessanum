@@ -72,5 +72,6 @@ body {
 	margin: 5px;
 	padding: 10px 100px;
 	text-align: center;
-	transition: opacity 0.5s ease-out;
+	transition: opacity 0.5s ease-out, background-color 0.05s ease-out;
+	touch-action: manipulation;
 }

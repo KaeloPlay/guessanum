@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta name="viewport" content="
+  width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no
+">
+</head>
+
+<body>
+<div class="elements">
+
+<button id="startButton" onclick="start()">Start</button>
+
+<div class="main">
+<p id="title">Guess The Number!</p>
+<p id="lives">Lives left: null</p>
+<p id="text"></p>
+
+<div class="guessContainer">
+<button id="guess0" onclick="checkInput(0)"></button>
+<button id="guess1" onclick="checkInput(1)"></button>
+<button id="guess2" onclick="checkInput(2)"></button>
+</div>
+
+</div>
+
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+<script src="script_guess.js" defer></script>
+<link rel="stylesheet" href="style_guess.css">
+</html>

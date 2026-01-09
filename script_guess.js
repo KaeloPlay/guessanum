@@ -1,4 +1,5 @@
 const main = document.querySelector(".main");
+let isTransitioning = false;
 let first;
 let second;
 let toGuess;
@@ -55,13 +56,13 @@ function setRandom() {
 }
 
 function checkInput(index) {
+	if (isTransitioning) return;
+	isTransitioning = true;
 	let correct
-	let value = guessList[(index)]
+	let value = guessList[index]
 	guessEl = document.querySelector(`#guess${index}`);
 
-	correct = (value === toGuess ? "Correct" : "Wrong");
-	
-	if (correct === "Wrong") {
+	if (value !== toGuess) {
 		navigator.vibrate(100);
 		
 		livesEl.style.color = "var(--danger)";
@@ -69,7 +70,7 @@ function checkInput(index) {
 		guessEl.style.opacity = 0;
 		guessEl.classList.add("disabled");
 		
-		lives = lives - 1;
+		lives--;
 		livesEl.innerHTML = (`Lives left: ${lives}`);
 		
 		if (lives === 0) {
@@ -77,15 +78,21 @@ function checkInput(index) {
 			
 			main.style.opacity = 0;
 			main.style.pointerEvents = "none";
-			main.addEventListener("transitionend", () => {
-				setRandom()
-				main.style.opacity = 1;
-				main.style.pointerEvents = "auto";
-			}, { once: true });
+			
+			setTimeout(() => {
+				setRandom();
+				
+				requestAnimationFrame(() => {
+					main.style.opacity = 1;
+					main.style.pointerEvents = "auto";
+					isTransitioning = false;
+				});
+			}, 500);
+		} else {
+			isTransitioning = false;
 		}
 	} else {
 		navigator.vibrate([80, 50, 80]);
-		guessEl.style.backgroundColor = "var(--correct)";
 		
 		confetti({
 			particleCount: 130,
@@ -93,7 +100,12 @@ function checkInput(index) {
 			origin: { y: 1.3 }
 		});
 		
-		setRandom();
+		guessEl.style.backgroundColor = "var(--success)";
+		
+		setTimeout(() => {
+			setRandom();
+			isTransitioning = false;
+		}, 400);
 	}
 }
 
