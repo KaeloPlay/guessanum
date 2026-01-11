@@ -4,8 +4,6 @@ const scoreEl = document.querySelector("#score");
 let score = 0;
 const hsEl = document.querySelector("#hs");
 let highScore;
-let gameReady = false;
-let isTransitioning = false;
 let first;
 let second;
 let toGuess;
@@ -19,7 +17,7 @@ const GameState = {
 	READY: "ready",
 	TRANSITION: "transition"
 };
-setState(GameState.IDLE);
+let state = GameState.IDLE;
 
 document.addEventListener("DOMContentLoaded", () => {
 	buttonColor = getComputedStyle(document.querySelector("#guess0")).backgroundColor;
@@ -43,14 +41,13 @@ function start() {
 	main.style.transform = "translateY(0px)";
 	
 	setTimeout(() => {
-		setState(GameState.READY);
-		buttons("unlock");
+		requestAnimationFrame(() => {
+			setState(GameState.READY);
+		});
 	}, 600);
 }
 
 function setRandom() {
-	setState(GameState.TRANSITION);
-	
 	first = Math.floor(Math.random() * 25) + 1;
 	second = Math.floor(Math.random() * 25) + 1;
 
@@ -74,21 +71,10 @@ function setRandom() {
 	console.log(first, second, toGuess);
 	
 	setGuess(first, second);
-	
-	requestAnimationFrame(() => {
-		setState(GameState.READY);
-	});
-	
-	console.log({
-		isTransitioning,
-		gameReady,
-		guessList,
-		toGuess
-	});
 }
 
 function checkInput(index) {
-	if (state === GameState.TRANSITION) return;
+	if (state !== GameState.READY) return;
 	
 	setState(GameState.TRANSITION);
 	
@@ -108,10 +94,8 @@ function checkInput(index) {
 		
 		if (lives === 0) {
 			navigator.vibrate(300);
-			buttons("lock");
 			
 			main.style.opacity = 0;
-			main.style.pointerEvents = "none";
 			
 			setTimeout(() => {
 				resetLives();
@@ -119,8 +103,6 @@ function checkInput(index) {
 				
 				requestAnimationFrame(() => {
 					main.style.opacity = 1;
-					main.style.pointerEvents = "auto";
-					buttons("unlock");
 					setState(GameState.READY);
 				});
 			}, 600);
@@ -129,7 +111,6 @@ function checkInput(index) {
 		}
 	} else {
 		navigator.vibrate([80, 50, 80]);
-		buttons("lock");
 		
 		resetLives();
 		
@@ -145,8 +126,10 @@ function checkInput(index) {
 			setTimeout(() => {
 				updateScore("add");
 				setRandom();
-				buttons("unlock");
-				setState(GameState.READY);
+				
+				requestAnimationFrame(() => {
+					setState(GameState.READY);
+				});
 			}, 600);
 		}
 	}
@@ -207,6 +190,18 @@ function updateScore(type) {
 }
 
 function setState(type) {
+	if (state === type) return;
+	
+	if (type === GameState.TRANSITION) {
+		main.style.pointerEvents = "none";
+		buttons("lock");
+	}
+	
+	if (type === GameState.READY) {
+		main.style.pointerEvents = "auto";
+		buttons("unlock");
+	}
+	
 	state = type;
 	console.log(`STATE: ${type}`)
 }
