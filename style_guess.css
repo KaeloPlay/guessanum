@@ -46,6 +46,9 @@ body {
 	color: var(--text-soft);
 	transition: opacity 0.5s ease-out;
 }
+.subtitle {
+	margin: 0px 14px;
+}
 #startButton {
 	color: var(--text-soft);
 	position: fixed;
@@ -65,10 +68,25 @@ body {
 	margin: 0px 10px;
 }
 #lives {
+	margin: 0px 230px 0px 0px;
+	text-align: left;
 	color: var(--text-soft);
-	margin: 0px 14px;
 	font-size: 8px;
-	transition: backgroundColor 0.2s ease;
+	transition: color 0.2s ease;
+}
+#streakIcon {
+	margin: -3px;
+	opacity: 0;
+	text-align: right;
+	font-size: 8px;
+	transition: opacity 0.5s ease;
+}
+#streakText {
+	opacity: 0.5;
+	color: var(--text-soft);
+	text-align: right;
+	font-size: 8px;
+	transition: color 0.2s ease;
 }
 #text {
 	text-align: center;
@@ -89,4 +107,5 @@ body {
 	margin: 3px;
 	font-size: 12px;
 	text-align: center;
+	transition
 }
