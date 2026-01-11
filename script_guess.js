@@ -1,3 +1,4 @@
+const FIRE = "\u{1F525}";
 const main = document.querySelector(".main");
 const footer = document.querySelector(".footer");
 const scoreEl = document.querySelector("#score");
@@ -18,6 +19,14 @@ const GameState = {
 	TRANSITION: "transition"
 };
 let state = GameState.IDLE;
+const StreakState = {
+	S0: "#475569",
+	S1: "#f97316",
+	S2: "#ef4444",
+	S3: "#8b5cf6"
+};
+let streak = 0;
+let base = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
 	buttonColor = getComputedStyle(document.querySelector("#guess0")).backgroundColor;
@@ -32,6 +41,7 @@ function start() {
 	highScore = Number(localStorage.getItem("hs")) || 0;
 	hsEl.innerHTML = (`Highscore: ${highScore}`);
 	
+	updateStreak();
 	updateScore();
 	setRandom();
 	
@@ -48,8 +58,10 @@ function start() {
 }
 
 function setRandom() {
-	first = Math.floor(Math.random() * 25) + 1;
-	second = Math.floor(Math.random() * 25) + 1;
+	do {
+		first = Math.floor(Math.random() * 25) + 1;
+		second = Math.floor(Math.random() * 25) + 1;
+	} while (Math.abs(first - second) < 3);
 
 	let temp = [first, second].sort((a, b) => a - b);
 	first = temp[0];
@@ -108,6 +120,7 @@ function checkInput(index) {
 				});
 			}, 600);
 		} else {
+			updateStreak("subt");
 			setState(GameState.READY);
 		}
 	} else {
@@ -125,6 +138,7 @@ function checkInput(index) {
 			clickedButton.style.backgroundColor = "var(--success)";
 		} finally {
 			setTimeout(() => {
+				updateStreak("add");
 				updateScore("add");
 				setRandom();
 				
@@ -146,7 +160,7 @@ function setGuess(first, second) {
 		const button = document.querySelector(`#guess${i}`);
 		
 		if (guessList[i] === null) {
-			guessList[i] = setRandomExcept(first, second, toGuess);
+			guessList[i] = Math.floor(Math.random() * 25) + 1;
 		}
 
 		button.innerHTML = guessList[i];
@@ -173,7 +187,7 @@ function resetLives() {
 
 function updateScore(type) {
 	if (type === "add") {
-		score += 10;
+		score += Math.floor(base * getMultiplier());
 	};
 	
 	scoreEl.innerHTML = (`Score: ${score}`);
@@ -183,6 +197,54 @@ function updateScore(type) {
 		highScore = score;
 		hsEl.innerHTML = (`Highscore: ${highScore}`);
 	}
+}
+
+function updateStreak(type) {
+	const streakEl = document.querySelector("#streakText");
+	const streakIconEl = document.querySelector("#streakIcon");
+	
+	if (type === "add") {
+		if (streak < 5) {
+			streak++;
+		}
+	}
+	if (type === "subt") {
+		if (streak !== 0) {
+			streak--;
+		}
+	}
+	
+	
+	if (streak === 0) {
+		streakEl.style.color = StreakState.S0;
+		streakEl.style.fontWeight = "normal";
+		streakEl.style.opacity = 0.5;
+		streakIconEl.style.opacity = 0;
+	}
+	if (streak === 1 || streak === 2) {
+		streakEl.style.color = StreakState.S1;
+		streakEl.style.opacity = 1;
+		streakIconEl.style.opacity = 1;
+		streakIconEl.innerHTML = FIRE;
+	}
+	if (streak === 3 || streak === 4) {
+		streakEl.style.color = StreakState.S2;
+		streakIconEl.style.opacity = 0;
+	}
+	if (streak === 5) {
+		streakEl.style.color = StreakState.S3;
+		streakEl.style.fontWeight = "bold";
+	}
+	
+	const streakMultiply = getMultiplier();
+	streakEl.innerHTML = (`Streak ${streakMultiply}×`);
+}
+
+function getMultiplier() {
+	if (streak >= 5) return 3;
+	if (streak >= 3) return 1.5;
+	if (streak >= 1) return 1.2;
+	return 1
 }
 
 function setState(type) {
@@ -211,4 +273,4 @@ function setRandomExcept(min, max, except) {
 	} while (value === except);
 	
 	return value;
-}
+			}
