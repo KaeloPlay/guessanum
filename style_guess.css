@@ -16,6 +16,9 @@ body {
 .disabled {
 	pointer-events: none;
 }
+.wrong {
+	pointer-events: none
+}
 .elements {
 	min-height: 95vh;
 	display: flex;
@@ -86,4 +89,4 @@ body {
 	margin: 3px;
 	font-size: 12px;
 	text-align: center;
-}}
+}
