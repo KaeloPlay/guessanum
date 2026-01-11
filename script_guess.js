@@ -62,6 +62,7 @@ function setRandom() {
 		
 		button.style.opacity = 1;
 		button.style.backgroundColor = buttonColor;
+		button.classList.remove("wrong");
 	}
 
 	const textEl = document.querySelector("#text");
@@ -87,7 +88,7 @@ function checkInput(index) {
 		livesEl.style.color = "var(--danger)";
 		clickedButton.style.backgroundColor = "var(--danger)";
 		clickedButton.style.opacity = 0.25;
-		clickedButton.classList.add("disabled");
+		clickedButton.classList.add("wrong");
 		
 		lives--;
 		livesEl.innerHTML = (`Lives left: ${lives}`);
@@ -138,19 +139,14 @@ function checkInput(index) {
 function setGuess(first, second) {
 	guessList = [null, null, null];
 
-	let correctIndex = Math.floor(Math.random() * 3);
+	const correctIndex = Math.floor(Math.random() * 3);
 	guessList[correctIndex] = toGuess;
 
 	for (let i = 0; i < 3; i++) {
 		const button = document.querySelector(`#guess${i}`);
-
+		
 		if (guessList[i] === null) {
-			let fake;
-			do {
-				fake = Math.floor(Math.random() * (second - first + 1)) + first;
-			} while (fake === toGuess);
-
-			guessList[i] = fake;
+			guessList[i] = setRandomExcept(first, second, toGuess);
 		}
 
 		button.innerHTML = guessList[i];
@@ -204,4 +200,15 @@ function setState(type) {
 	
 	state = type;
 	console.log(`STATE: ${type}`)
+}
+
+function setRandomExcept(min, max, except) {
+	if (min === max) return except;
+	
+	let value
+	do {
+		value = Math.floor(Math.random() * (max - min + 1)) + min;
+	} while (value === except);
+	
+	return value;
 }
