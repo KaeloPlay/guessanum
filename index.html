@@ -1,11 +1,12 @@
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="
   width=device-width,
   initial-scale=1.0,
   maximum-scale=1.0,
-  user-scalable=no
-">
+  user-scalable=no"
+>
 </head>
 
 <body>
@@ -15,7 +16,13 @@
 
 <div class="main">
 <p id="title">Guess The Number!</p>
-<p id="lives">Lives left: null</p>
+
+<div class="subtitle">
+<span id="lives">Lives left: null</span>
+<span id="streakIcon"></span>
+<span id="streakText">Streak 0×—</span>
+</div>
+
 <p id="text"></p>
 
 <div class="guessContainer">
@@ -36,5 +43,4 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 <script src="script_guess.js" defer></script>
 <link rel="stylesheet" href="style_guess.css">
-
 </html>
